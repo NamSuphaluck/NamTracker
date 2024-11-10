@@ -1,39 +1,39 @@
-import "./Sidebar.css";
+import "./SidebarEmp.css";
 import Logo_img from "../../Images/logo1.png";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+const initPage = "EmpDashboard";
 
-const initPage = "Dashboard";
-function Sidebar({role}) {
+function SidebarEmp() {
   const [tab, setTab] = useState("");
 
   useEffect(() => {
     setTab(initPage);
   }, []);
 
-  const dashboardRef = useRef();
-  const employeesRef = useRef();
-  const workingStatusRef = useRef();
-  const messagesRef = useRef();
-  const notificationRef = useRef();
-  const settingsRef = useRef();
+  const EmpDashboardRef = useRef();
+  const EmpWorkingStatusRef = useRef();
+  const EmpMessagesRef = useRef();
+  const EmpNotificationRef = useRef();
+  const EmpSettingsRef = useRef();
+  const EmpSalaryRef = useRef();
   const userRef = useRef();
 
   useEffect(() => {
-    if (tab === "Employees") {
-      employeesRef.current.click();
-    } else if (tab === "Working Status") {
-      workingStatusRef.current.click();
-    } else if (tab === "Messages") {
-      messagesRef.current.click();
-    } else if (tab === "Notifications") {
-      notificationRef.current.click();
-    } else if (tab === "Settings") {
-      settingsRef.current.click();
+    if (tab === "EmpWorking Status") {
+      EmpWorkingStatusRef.current.click();
+    } else if (tab === "EmpMessages") {
+      EmpMessagesRef.current.click();
+    } else if (tab === "EmpNotifications") {
+      EmpNotificationRef.current.click();
+    } else if (tab === "EmpSettings") {
+      EmpSettingsRef.current.click();
     } else if (tab === "User") {
       userRef.current.click();
-    } else if (tab === "Dashboard") {
-      dashboardRef.current.click();
+    } else if (tab === "EmpSalary") {
+      EmpSalaryRef.current.click();
+    } else if (tab === "EmpDashboard") {
+      EmpDashboardRef.current.click();
     }
   }, [tab]);
   return (
@@ -46,11 +46,11 @@ function Sidebar({role}) {
           <span className="sidebar-name">WorkMate</span>
         </div>
         <div className="sidebar-menu">
-          <Link to="/dashboard" ref={dashboardRef}>
+          <Link to="/EmpDashboard" ref={EmpDashboardRef}>
             <button
               className="btn btn-link"
               style={{ color: "white", textDecoration: "none" }}
-              onClick={() => setTab("Dashboard")}
+              onClick={() => setTab("EmpDashboard")}
             >
               <span className="bi bi-grid-1x2-fill">
                 &nbsp;&nbsp;&nbsp;Dashboard
@@ -58,23 +58,11 @@ function Sidebar({role}) {
             </button>
           </Link>
 
-          <Link to="/employees" ref={employeesRef}>
+          <Link to="/EmpWorking-status" ref={EmpWorkingStatusRef}>
             <button
               className="btn btn-link"
               style={{ color: "white", textDecoration: "none" }}
-              onClick={() => setTab("Employees")}
-            >
-              <span className="bi bi-people-fill">
-                &nbsp;&nbsp;&nbsp;Employees
-              </span>
-            </button>
-          </Link>
-
-          <Link to="/working-status" ref={workingStatusRef}>
-            <button
-              className="btn btn-link"
-              style={{ color: "white", textDecoration: "none" }}
-              onClick={() => setTab("Working Status")}
+              onClick={() => setTab("EmpWorking Status")}
             >
               <span className="bi bi-clock-history">
                 &nbsp;&nbsp;&nbsp;Working Status
@@ -82,11 +70,23 @@ function Sidebar({role}) {
             </button>
           </Link>
 
-          <Link to="/messages" ref={messagesRef}>
+          <Link to="/EmpSalary" ref={EmpSalaryRef}>
             <button
               className="btn btn-link"
               style={{ color: "white", textDecoration: "none" }}
-              onClick={() => setTab("Messages")}
+              onClick={() => setTab("EmpSalary")}
+            >
+              <span className="bi bi-wallet-fill">
+                &nbsp;&nbsp;&nbsp;Salary
+              </span>
+            </button>
+          </Link>
+
+          <Link to="/EmpMessages" ref={EmpMessagesRef}>
+            <button
+              className="btn btn-link"
+              style={{ color: "white", textDecoration: "none" }}
+              onClick={() => setTab("EmpMessages")}
             >
               <span className="bi bi-chat-right-text-fill">
                 &nbsp;&nbsp;&nbsp;Messages
@@ -94,11 +94,11 @@ function Sidebar({role}) {
             </button>
           </Link>
 
-          <Link to="/notifications" ref={notificationRef}>
+          <Link to="/EmpNotifications" ref={EmpNotificationRef}>
             <button
               className="btn btn-link"
               style={{ color: "white", textDecoration: "none" }}
-              onClick={() => setTab("Notifications")}
+              onClick={() => setTab("EmpNotifications")}
             >
               <span className="bi bi-bell-fill">
                 &nbsp;&nbsp;&nbsp;Notifications
@@ -106,7 +106,7 @@ function Sidebar({role}) {
             </button>
           </Link>
 
-          <Link to="/settings" ref={settingsRef}>
+          <Link to="/EmpSettings" ref={EmpSettingsRef}>
             <button
               className="btn btn-link"
               style={{ color: "white", textDecoration: "none" }}
@@ -121,13 +121,15 @@ function Sidebar({role}) {
         <div className="sidebar-footer">
           <div className="profile-name" style={{ color: "white" }}>
             <Link to="/user" ref={userRef}>
-            <button
-              className="btn btn-link"
-              style={{ color: "white", textDecoration: "none" }}
-              onClick={() => setTab("User")}
-            >
-              <span className="bi bi-person-circle">&nbsp;&nbsp;Username</span>
-            </button>
+              <button
+                className="btn btn-link"
+                style={{ color: "white", textDecoration: "none" }}
+                onClick={() => setTab("User")}
+              >
+                <span className="bi bi-person-circle">
+                  &nbsp;&nbsp;Username
+                </span>
+              </button>
             </Link>
           </div>
         </div>
@@ -136,4 +138,4 @@ function Sidebar({role}) {
   );
 }
 
-export default Sidebar;
+export default SidebarEmp;
