@@ -9,6 +9,8 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Setting from './pages/Settings/Setting';
 import Messages from './pages/Messages/Messages';
 import Employees from './pages/Employees/Employees';
+import EditEmployee from './pages/Employees/EditEmployee'
+import UpdateEmployee from './pages/Employees/UpdateEmployee'
 import WorkingS from './pages/WorkingStatus/WorkingS';
 import Notification from './pages/Notifications/Notification';
 import User from './pages/User/User';
@@ -31,15 +33,16 @@ function App() {
         <HashRouter>
           <Routes>
             <Route element={<Layout />}>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<Employees />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/settings" element={<Setting />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/employees" element={<Employees />} />
+              <Route path='/updateemployee' element={<UpdateEmployee />} />
+              <Route path="/editemployee" element={<EditEmployee />} />
               <Route path="/working-status" element={<WorkingS />} />
               <Route path="/notifications" element={<Notification />} />
               <Route path='/user' element={<User setToken={setToken}/>} />
-  
             </Route>
           </Routes>
         </HashRouter>
