@@ -1,15 +1,18 @@
 const users = [
           {
-                    user: "admin",
+                    id: "admin",
                     password: "1234",
                     role: "admin",
                     token: "admin"
           },
-];
-export function login(user, password) {
-          const foundUser = users.find((u) => u.user === user && u.password === password);
-          if (foundUser) {
-                    return foundUser;
+          {
+                    id: "user1",
+                    password: "2244",
+                    role: "user",
+                    token: "user"
           }
-          return null;
+];
+export function login(id, password) {
+          const User = users.find((User) => User.id === id && User.password === password);
+          return User ? {role: User.role, token: User.token} : null;
 }
