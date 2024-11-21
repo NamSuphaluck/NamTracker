@@ -3,166 +3,157 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import { useState, useEffect } from "react";
 
-/**
- * This component renders a modal for editing an employee's information.
- * It includes text fields for the user ID, name, department, phone, and email.
- * It also includes a radio button selection for the employee's status.
- * The component takes an employee object as a prop and displays the employee's
- * information in the fields.
- * When the user clicks the save button, the component will send a request to
- * update the employee's information in the database.
- * When the user clicks the cancel button, the component will close the modal.
- */
-
-async function EditEmployee(id, name, department, phone, email, status) {
-  // const [show, setShow] = useState(false);
-
-  // const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
+function EditEmployee({ id, name, department, phone, email, status, onSave }) {
   
-  console.log(id, name, department, phone, email, status);
-  const update = async (id, name, department, phone, email, status) => {
+  const [formData, setFormData] = useState({
+    name,
+    department,
+    phone,
+    email,
+    status,
+  });
+
+  
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+
+  
+    if (id === "status_active" || id === "status_inactive") {
+      setFormData((prevData) => ({
+        ...prevData,
+        status: value, 
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [id]: value, 
+      }));
+    }
+  };
+
+  
+  const update = async () => {
     const bodyRequest = {
-      userId : id,
-      name: name,
-      department: department,
-      phone: phone,
-      email: email,
-      status: status,
+      userId: id,
+      name: formData.name,
+      department: formData.department,
+      phone: formData.phone,
+      email: formData.email,
+      status: formData.status,
     };
 
-    fetch("http://localhost:9000/employee/update/" + id, {
-      method: "PUT",
-      headers: {
-        Host: null,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bodyRequest),
-    })
-      .then(async (response) => {
-        let res = await response.json();
-        console.log(res);
-        
-        console.log(JSON.stringify(bodyRequest));
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      const response = await fetch(`http://localhost:9000/employee/update/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyRequest),
       });
+
+      const res = await response.json();
+      console.log(res);
+      onSave(); 
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <Modal
       id="modal-test"
       show={true}
-      onHide={false}
-      backdrop={false}
+      onHide={() => {}}
+      backdrop="static"
       keyboard={false}
     >
       <Modal.Header className="modal-head" closeButton>
         <Modal.Title>Edit Employee</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div class="form-group">
-          <label>
-            <b>User ID</b>
-          </label>
+        <div className="form-group">
+          <label><b>User ID</b></label>
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             id="user_id"
-            placeholder="User ID"
+            value={id}
             disabled
-          >
-            {id}
-          </input>
+          />
         </div>
-        <br></br>
-        <div class="form-group">
-          <label>
-            <b>Name</b>
-          </label>
+        <div className="form-group">
+          <label><b>Name</b></label>
           <input
             type="text"
-            class="form-control"
-            id="name_edit"
+            className="form-control"
+            id="name"
+            value={formData.name}
+            onChange={handleChange}
             placeholder="Name"
-          >
-            {name}
-          </input>
+          />
         </div>
-        <br></br>
-        <div class="form-group">
-          <label>
-            <b>Department</b>
-          </label>
+        <div className="form-group">
+          <label><b>Department</b></label>
           <input
             type="text"
-            class="form-control"
-            id="department_edit"
+            className="form-control"
+            id="department"
+            value={formData.department}
+            onChange={handleChange}
             placeholder="Department"
-          >
-            {department}
-          </input>
+          />
         </div>
-        <br></br>
-        <div class="form-group">
-          <label>
-            <b>Phone</b>
-          </label>
+        <div className="form-group">
+          <label><b>Phone</b></label>
           <input
             type="text"
-            class="form-control"
-            id="phone_edit"
+            className="form-control"
+            id="phone"
+            value={formData.phone}
+            onChange={handleChange}
             placeholder="Phone"
-          >
-            {phone}
-          </input>
+          />
         </div>
-        <br></br>
-        <div class="form-group">
-          <label>
-            <b>Email</b>
-          </label>
+        <div className="form-group">
+          <label><b>Email</b></label>
           <input
             type="text"
-            class="form-control"
-            id="email_edit"
+            className="form-control"
+            id="email"
+            value={formData.email}
+            onChange={handleChange}
             placeholder="Email"
-          >
-            {email}
-          </input>
+          />
         </div>
-        <br></br>
-        <form action="/action_page.php">
-          <p>
-            <b>Status</b>
-          </p>
-          <input
-            type="radio"
-            id="status_edit"
-            name="fav_language"
-            value="Active"
-          ></input>
-          <label for="status_edit">Active</label>
-          <br></br>
-
-          <br></br>
-
-          <input
-            type="radio"
-            id="status_edit"
-            name="fav_language"
-            value="InActive"
-          ></input>
-          <label for="status_edit">In-Active</label>
-          <br></br>
-        </form>
+        <div className="form-group">
+          <label><b>Status</b></label>
+          <div>
+            <input
+              type="radio"
+              id="status_active"
+              name="status"
+              value="Active"
+              checked={formData.status === "Active"}
+              onChange={handleChange}
+            />
+            <label htmlFor="status_active">Active</label>
+            <input
+              type="radio"
+              id="status_inactive"
+              name="status"
+              value="InActive"
+              checked={formData.status === "InActive"}
+              onChange={handleChange}
+            />
+            <label htmlFor="status_inactive">In-Active</label>
+          </div>
+        </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" >
-          Cancel
-        </Button>
-        <Button variant="primary" onClick={() => update(/* ส่ง value : id, name, department, phone, email, status ที่มีค่าตามหน้าจอป๊อปอัพแก้ไขเรียบร้อยแล้ว ใน update()*/)}>Save</Button>
+        <Button variant="secondary" onClick={() => {}}>Cancel</Button>
+        <Button variant="primary" onClick={update}>Save</Button>
       </Modal.Footer>
     </Modal>
   );

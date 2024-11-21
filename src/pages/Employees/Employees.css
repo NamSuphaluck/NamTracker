@@ -1,73 +1,124 @@
-.Employees {
-  text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+/* ปรับแต่งตาราง */
+table {
+  width: 100%;
+  border-collapse: collapse;  /* ทำให้ตารางไม่เกิดช่องว่างระหว่างเซลล์ */
+  margin-bottom: 20px;  /* เพิ่มระยะห่างด้านล่างของตาราง */
 }
-.edit-employee {
+
+table th, table td {
+  padding: 12px;
   text-align: left;
-  margin-left: 1rem;
-}
-th,
-td {
-  padding: 15px;
-  text-align: left;
+  border: 1px solid #ddd;  /* เพิ่มเส้นขอบให้กับเซลล์ */
 }
 
-.menu {
-  display: flex;
-}
-
-
-/* The Modal (background) */
-.modal {
-  display: flex; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
+table th {
+  background-color: #4CAF50;
+  color: white;
   font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
+table tr:nth-child(even) {
+  background-color: #f2f2f2;  /* สีพื้นหลังของแถวคู่ */
+}
+
+table tr:hover {
+  background-color: #ddd;  /* สีพื้นหลังของแถวที่ถูก hover */
+}
+
+/* ปรับแต่งปุ่ม Edit, Delete, Save, Cancel */
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;  /* เพิ่มระยะห่างขวาระหว่างปุ่ม */
+  transition: background-color 0.3s ease;
 }
 
-.close-button {
-position: absolute;
-top: 5px;
-right: 5px;
-font-size: 24px;
-background: transparent;
-color: black;
-border: transparent;
-cursor: pointer;
+button:hover {
+  background-color: #45a049;
 }
 
-.close-button:hover {
-scale: 1.2;
-color: red;
+/* ปุ่มลบ (Delete) */
+button[type="button"] {
+  background-color: #f44336;
+}
+
+button[type="button"]:hover {
+  background-color: #e53935;
+}
+
+/* ปุ่มใน Modal (Save, Cancel) */
+.modal-content button {
+  width: 48%;  /* ลดขนาดให้เล็กลงครึ่งหนึ่ง */
+  padding: 8px;  /* ลดขนาด padding */
+  font-size: 14px;  /* ลดขนาดฟอนต์ */
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px;  /* เพิ่มระยะห่างระหว่างปุ่ม */
+  display: inline-block;  /* ให้ปุ่มอยู่ในบรรทัดเดียว */
+}
+
+/* จัดปุ่มให้ตรงกลาง */
+.modal-content {
+  text-align: center;  /* จัดให้ปุ่มอยู่ตรงกลาง */
+}
+
+.modal-content button[type="button"] {
+  background-color: #f44336;
+}
+
+.modal-content button[type="button"]:hover {
+  background-color: #e53935;
+}
+
+.modal-content button:hover {
+  background-color: #45a049;
+}
+
+.modal-content button[type="button"] {
+  background-color: #f44336;
+}
+
+.modal-content button[type="button"]:hover {
+  background-color: #e53935;
+}
+
+/* เพิ่มระยะห่างระหว่างปุ่มต่างๆ */
+.form-actions button {
+  margin-right: 10px;  /* เพิ่มระยะห่างระหว่างปุ่ม */
+}
+
+.modal-content .form-actions button {
+  margin-bottom: 10px;  /* เพิ่มระยะห่างระหว่างปุ่มใน Modal */
+}
+
+/* เพิ่มระยะห่างระหว่างแถวในตาราง */
+table td {
+  padding: 12px;
+}
+
+button:focus {
+  outline: none;  /* ลบกรอบเมื่อปุ่มถูกคลิก */
+}
+
+/* สำหรับหน้าจอขนาดใหญ่กว่าหรือเท่ากับ 768px (Windows Desktop) */
+@media (min-width: 768px) {
+  .modal-content button {
+    width: 48%;  /* ปรับขนาดปุ่มให้เล็กลงครึ่งหนึ่ง */
+    font-size: 14px;  /* ปรับขนาดฟอนต์ให้เหมาะสม */
+    padding: 8px;  /* ปรับ padding ให้พอดี */
+  }
+
+  /* ปรับขนาดของ Modal เมื่อใช้หน้าจอขนาดใหญ่ */
+  .modal-content {
+    padding: 20px;  /* เพิ่ม padding ให้กับ modal */
+  }
 }

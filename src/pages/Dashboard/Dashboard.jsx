@@ -6,37 +6,37 @@ function Dashboard() {
       <h1>Dashboard</h1>
       <div className="card-container">
       <div className="card" style={{width: "18rem", marginBottom: "1rem"}}>
-        <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">
+        <div className="card-body">
+          <h5 className="card-title">Special title treatment</h5>
+          <p className="card-text">
             With supporting text below as a natural lead-in to additional
             content.
           </p>
-          <a href="#" class="btn btn-primary">
+          <a href="#" className="btn btn-primary">
             Go somewhere
           </a>
         </div>
       </div>
       <div className="card" style={{width: "18rem", marginBottom: "1rem"}}>
-        <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">
+        <div className="card-body">
+          <h5 className="card-title">Special title treatment</h5>
+          <p className="card-text">
             With supporting text below as a natural lead-in to additional
             content.
           </p>
-          <a href="#" class="btn btn-primary">
+          <a href="#" className="btn btn-primary">
             Go somewhere
           </a>
         </div>
       </div>
       <div className="card" style={{width: "18rem", marginBottom: "1rem"}}>
-        <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">
+        <div className="card-body">
+          <h5 className="card-title">Special title treatment</h5>
+          <p className="card-text">
             With supporting text below as a natural lead-in to additional
             content.
           </p>
-          <a href="#" class="btn btn-primary">
+          <a href="#" className="btn btn-primary">
             Go somewhere
           </a>
         </div>

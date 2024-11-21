@@ -1,71 +1,126 @@
 .layout {
-  display: grid;
+  display: grid; 
   grid-template-columns: 0.9fr 5fr;
   grid-template-rows: 1fr;
   grid-template-areas: "sidebar body";
   height: 700px;
+  position: relative;
+  
 }
+/* ตั้งค่าพื้นฐาน */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
 .sidebar {
   /* grid-area: sidebar; */
   border-right: 1px solid black;
-  height: 730px;
+  height: 7F30px;
   background-color: #231f20;
+
 }
 
+/* ส่วนโลโก้ */
 .sidebar-top {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  justify-content: center;
-  align-items: center;
-  height: 80px;
-  margin: 10px;
+  text-align: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-logo img {
-  width: 50px;
+  max-width: 80%;
   border-radius: 10px;
-  background-image: none;
 }
 
 .sidebar-name {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 1rem;
-  color: #fff;
-  font-size: larger;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #f8f9fa;
 }
 
+/* เมนู Sidebar */
 .sidebar-menu {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  align-items: start;
-  margin-left: 1rem;
-  gap: 10px;
+  padding: 20px 0;
 }
 
-.sidebar-footer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 16.5rem;
-  height: 100px;
-  background-color: #31363f;
+.sidebar-menu a {
+  text-decoration: none;
+  color: white;
 }
 
-.profile-name {
+.sidebar-menu button {
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #fff;
-  font-size: medium;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .sidebar-menu button:hover {
-  display: flex;
-  background-color: #31363f;
-  width: 100%;
+  background-color: #495057;
+}
+
+.sidebar-menu .bi {
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+/* ส่วนท้าย */
+.sidebar-footer {
+  padding: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.sidebar-footer a {
   text-decoration: none;
+  color: white;
+}
+
+.sidebar-footer button {
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sidebar-footer button:hover {
+  color: #adb5bd;
+}
+
+.sidebar-footer .bi {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+/* รองรับหน้าจอขนาดเล็ก */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar-menu button {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  .sidebar-footer button {
+    font-size: 14px;
+  }
 }

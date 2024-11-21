@@ -18,16 +18,19 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, PATCH, DELETE" // what matters here is that OPTIONS is present
-  );
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE" ,
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
+  )
 });
 
 app.get("/employee", async (req,res) => {
-  const employee = await employeeModel.find({});
-  console.log(JSON.stringify(employee))
-  res.json(employee);
+  try {
+    const employees = await employeeModel.find();
+    res.status(200).json(employees);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 app.get("/employee/:id", async (req, res) => {
