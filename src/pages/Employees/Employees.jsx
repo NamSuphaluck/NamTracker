@@ -10,22 +10,23 @@ function Employees() {
     department: "",
     phone: "",
     email: "",
+    userId: "", // Add userId field for the Thai ID number
   });
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    initData();
+    initData(); // ดึงข้อมูลพนักงานเมื่อเริ่มต้น
   }, []);
 
+  // ฟังก์ชันในการดึงข้อมูลพนักงานจากเซิร์ฟเวอร์
   const initData = async () => {
     try {
       const response = await axios.get(
         "http://localhost:9000/api/data/getEmployee"
       );
-      console.log("API Response:", response.data);
-      setEmployees(response.data);
+      setEmployees(response.data); // อัปเดตข้อมูลใน state
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -34,110 +35,124 @@ function Employees() {
   const handleShow = () => setShowAddEmployee(true);
   const handleClose = () => {
     setShowAddEmployee(false);
-    setNewEmployee({ name: "", department: "", phone: "", email: "" });
+    setNewEmployee({
+      name: "",
+      department: "",
+      phone: "",
+      email: "",
+      userId: "",
+    });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "phone") {
+      // ตรวจสอบให้เป็นตัวเลขและยาวไม่เกิน 10 ตัว
+      if (/^\d*$/.test(value) && value.length <= 10) {
+        setNewEmployee((prevState) => ({ ...prevState, [name]: value })); // เก็บค่า phone เป็น string
+      }
+      return; // ออกจากฟังก์ชันหาก field คือ phone
+    }
+
+    if (name === "userId") {
+      // ตรวจสอบให้เป็นตัวเลขและยาวไม่เกิน 13 ตัว
+      if (/^\d*$/.test(value) && value.length <= 13) {
+        setNewEmployee((prevState) => ({ ...prevState, [name]: value }));
+      }
+      return;
+    }
+
+    // กรณีอื่นๆ
     setNewEmployee((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleAddEmployee = async (e) => {
-    e.preventDefault(); // ป้องกันการ refresh หน้า
+    e.preventDefault();
+
+    if (
+      !newEmployee.name ||
+      !newEmployee.department ||
+      !newEmployee.phone ||
+      !newEmployee.email ||
+      !newEmployee.userId
+    ) {
+      alert("Please fill out all fields.");
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:9000/api/data/addEmployee",
         newEmployee
       );
-      console.log("Employee added:", response.data);
-      setEmployees((prevEmployees) => [...prevEmployees, response.data]);
+      setEmployees((prevEmployees) => [...prevEmployees, response.data]); // อัปเดตข้อมูลทันทีหลังจากเพิ่ม
       handleClose();
     } catch (error) {
-      console.error("Error adding employee:", error.message);
+      console.error(
+        "Error adding employee:",
+        error.response ? error.response.data : error.message
+      );
+      alert("Error adding employee. Please try again.");
     }
   };
 
   const handleEditClick = (employee) => {
-    setSelectedEmployee(employee); // เก็บข้อมูลพนักงานที่เลือก
-    setIsModalOpen(true); // เปิด Modal
+    setSelectedEmployee(employee);
+    setIsModalOpen(true);
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
+      const response = await axios.put(
         `http://localhost:9000/api/data/updateEmployee/${selectedEmployee._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(selectedEmployee),
-        }
+        selectedEmployee
       );
+      const updatedEmployee = response.data;
 
-      if (response.ok) {
-        const updatedEmployee = await response.json();
-        console.log("Updated Employee:", updatedEmployee);
-        // อัปเดต state หลังจากบันทึกข้อมูลสำเร็จ
-        setEmployees((prev) =>
-          prev.map((emp) =>
-            emp._id === updatedEmployee._id ? updatedEmployee : emp
-          )
-        );
-        setIsModalOpen(false); // ปิดโมดอลหลังจากอัปเดต
-      } else {
-        console.error("Failed to update employee");
-      }
+      // อัปเดตข้อมูลพนักงานในหน้าเว็บทันที
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp._id === updatedEmployee._id ? updatedEmployee : emp
+        )
+      );
+      setIsModalOpen(false); // ปิด modal เมื่ออัปเดตเสร็จ
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error updating employee:", error.message);
     }
   };
 
   const handleDeleteEmployee = async (employeeId) => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
       try {
-        const response = await fetch(
-          `http://localhost:9000/api/data/deleteEmployee/${employeeId}`,
-          {
-            method: "DELETE",
-          }
+        await axios.delete(
+          `http://localhost:9000/api/data/deleteEmployee/${employeeId}`
         );
 
-        if (response.ok) {
-          alert("Employee deleted successfully");
-          // อัปเดตตารางโดยการลบพนักงานที่ถูกลบออกจาก State
-          setEmployees((prevEmployees) =>
-            prevEmployees.filter((emp) => emp._id !== employeeId)
-          );
-        } else {
-          console.error("Failed to delete employee");
-          alert("Failed to delete employee");
-        }
+        // เรียกฟังก์ชันเพื่อดึงข้อมูลใหม่จากฐานข้อมูล
+        initData();
       } catch (error) {
-        console.error("Error deleting employee:", error);
-        alert("Error deleting employee");
+        console.error("Error deleting employee:", error.message);
       }
     }
   };
 
   return (
     <div className="Employees">
-      <h1>Employees</h1>
+      <h1 className="title">Employee Management</h1>
       <div className="menu">
-        <div className="add-employee">
-          <button className="button-add" onClick={handleShow}>
-            Add Employee
-          </button>
-        </div>
+        <button className="button-add" onClick={handleShow}>
+          Add Employee
+        </button>
       </div>
 
       {showAddEmployee && (
         <div className="popup-overlay">
           <div className="popup">
             <h2>Add New Employee</h2>
-            <form className="add-employee-form" onSubmit={handleAddEmployee}>
-              <div>
+            <form className="form" onSubmit={handleAddEmployee}>
+              <div className="form-group">
                 <label>Name:</label>
                 <input
                   type="text"
@@ -147,7 +162,7 @@ function Employees() {
                   required
                 />
               </div>
-              <div>
+              <div className="form-group">
                 <label>Department:</label>
                 <input
                   type="text"
@@ -157,17 +172,19 @@ function Employees() {
                   required
                 />
               </div>
-              <div>
+              <div className="form-group">
                 <label>Phone:</label>
                 <input
                   type="text"
                   name="phone"
-                  value={newEmployee.phone}
+                  value={newEmployee.phone} // ใช้ค่า string ที่มาจาก state
                   onChange={handleInputChange}
+                  maxLength="10" // จำกัดจำนวนตัวเลขสูงสุดเป็น 10
                   required
                 />
               </div>
-              <div>
+
+              <div className="form-group">
                 <label>Email:</label>
                 <input
                   type="email"
@@ -177,10 +194,21 @@ function Employees() {
                   required
                 />
               </div>
+              <div className="form-group">
+                <label>Thai ID:</label>
+                <input
+                  type="text"
+                  name="userId"
+                  value={newEmployee.userId}
+                  onChange={handleInputChange}
+                  maxLength="13"
+                  required
+                />
+              </div>
               <div className="form-actions">
                 <button type="submit">Add Employee</button>
                 <button type="button" onClick={handleClose}>
-                  Cancel
+                  Close
                 </button>
               </div>
             </form>
@@ -188,51 +216,16 @@ function Employees() {
         </div>
       )}
 
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th>User ID</th>
-              <th>Name</th>
-              <th>Department</th>
-              <th>Contact Number</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {employees.map((employee) => (
-              <tr key={employee._id}>
-                <td>{employee._id}</td>
-                <td>{employee.name}</td>
-                <td>{employee.department}</td>
-                <td>{employee.phone}</td>
-                <td>{employee.email}</td>
-                <td>{employee.status}</td>
-                <td>
-                  <button onClick={() => handleEditClick(employee)}>Edit</button>
-                  &nbsp;
-                  <button onClick={() => handleDeleteEmployee(employee._id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
       {isModalOpen && selectedEmployee && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="popup-overlay">
+          <div className="popup">
             <h2>Edit Employee</h2>
-            <form onSubmit={handleUpdate}>
-              <label>
-                Name:
+            <form className="form" onSubmit={handleUpdate}>
+              <div className="form-group">
+                <label>Name:</label>
                 <input
                   type="text"
+                  name="name"
                   value={selectedEmployee.name}
                   onChange={(e) =>
                     setSelectedEmployee({
@@ -240,12 +233,14 @@ function Employees() {
                       name: e.target.value,
                     })
                   }
+                  required
                 />
-              </label>
-              <label>
-                Department:
+              </div>
+              <div className="form-group">
+                <label>Department:</label>
                 <input
                   type="text"
+                  name="department"
                   value={selectedEmployee.department}
                   onChange={(e) =>
                     setSelectedEmployee({
@@ -253,12 +248,14 @@ function Employees() {
                       department: e.target.value,
                     })
                   }
+                  required
                 />
-              </label>
-              <label>
-                Contact Number:
+              </div>
+              <div className="form-group">
+                <label>Phone:</label>
                 <input
                   type="text"
+                  name="phone"
                   value={selectedEmployee.phone}
                   onChange={(e) =>
                     setSelectedEmployee({
@@ -266,12 +263,15 @@ function Employees() {
                       phone: e.target.value,
                     })
                   }
+                  maxLength="10"
+                  required
                 />
-              </label>
-              <label>
-                Email:
+              </div>
+              <div className="form-group">
+                <label>Email:</label>
                 <input
                   type="email"
+                  name="email"
                   value={selectedEmployee.email}
                   onChange={(e) =>
                     setSelectedEmployee({
@@ -279,16 +279,63 @@ function Employees() {
                       email: e.target.value,
                     })
                   }
+                  required
                 />
-              </label>
-              <button type="submit">Save</button>
-              <button type="button" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </button>
+              </div>
+              <div className="form-group">
+                <label>Thai ID:</label>
+                <input
+                  type="text"
+                  name="userId"
+                  value={selectedEmployee.userId}
+                  onChange={(e) =>
+                    setSelectedEmployee({
+                      ...selectedEmployee,
+                      userId: e.target.value,
+                    })
+                  }
+                  maxLength="13"
+                  required
+                />
+              </div>
+              <div className="form-actions">
+                <button type="submit">Update Employee</button>
+                <button type="button" onClick={() => setIsModalOpen(false)}>
+                  Close
+                </button>
+              </div>
             </form>
           </div>
         </div>
       )}
+
+      <table className="employee-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {employees.map((employee) => (
+            <tr key={employee._id}>
+              <td>{employee.name}</td>
+              <td>{employee.department}</td>
+              <td>{employee.phone}</td>
+              <td>{employee.email}</td>
+              <td>
+                <button onClick={() => handleEditClick(employee)}>Edit</button>
+                <button onClick={() => handleDeleteEmployee(employee._id)}>
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
