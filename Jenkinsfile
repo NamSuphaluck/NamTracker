@@ -21,10 +21,10 @@ pipeline {
                 echo "Building Docker image..."
                 script {
                     // สร้าง Docker image โดยใช้ Dockerfile ที่อยู่ใน repository
-                    bat "docker build -t Dockertest ."
+                    bat "docker build -t dockertest ."
                     
                     // รัน Docker container จาก image ที่สร้าง
-                    bat "docker run -d --name my-container -p 8080:80 Dockertest:latest"
+                    bat "docker run -d --name my-container -p 8080:80 dockertest:latest"
                 }
             }
         }
