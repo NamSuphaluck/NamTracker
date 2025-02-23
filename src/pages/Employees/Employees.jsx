@@ -19,14 +19,17 @@ function Employees() {
   useEffect(() => {
     initData(); // ดึงข้อมูลพนักงานเมื่อเริ่มต้น
   }, []);
-
+  
   // ฟังก์ชันในการดึงข้อมูลพนักงานจากเซิร์ฟเวอร์
   const initData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:9000/api/data/getEmployee"
-      );
-      setEmployees(response.data); // อัปเดตข้อมูลใน state
+      const response = await axios.get("http://localhost:9000/api/data/getEmployee");
+  
+      // กรองพนักงานที่มี role เป็น "Employee" เท่านั้น
+      const filteredEmployees = response.data.filter(employee => employee.role === "Employee");
+      
+      // อัปเดต state ของ employees ให้แสดงเฉพาะพนักงานที่มี role เป็น "Employee"
+      setEmployees(filteredEmployees); // อัปเดตข้อมูลใน state
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -140,7 +143,7 @@ function Employees() {
 
   return (
     <div className="Employees">
-      <h1 className="title">Employee Management</h1>
+      <h1 className="title">ข้อมูลพนักงาน</h1>
       <div className="menu">
         <button className="button-add" onClick={handleShow}>
           Add Employee
@@ -230,7 +233,7 @@ function Employees() {
                   onChange={(e) =>
                     setSelectedEmployee({
                       ...selectedEmployee,
-                      name: e.target.value,
+                      name: e.target
                     })
                   }
                   required

@@ -1,24 +1,25 @@
-.layout {
-  display: grid; 
-  grid-template-columns: 0.9fr 5fr;
-  grid-template-rows: 1fr;
-  grid-template-areas: "sidebar body";
-  height: 700px;
-  position: relative;
-  
-}
-/* ตั้งค่าพื้นฐาน */
-body {
+/* ให้ html และ body ครอบคลุมความสูงเต็มหน้าจอ */
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%; /* ทำให้ html และ body ครอบคลุมหน้าจอทั้งหมด */
   font-family: 'Arial', sans-serif;
 }
 
-.sidebar {
-  /* grid-area: sidebar; */
-  border-right: 1px solid black;
-  height: 7F30px;
-  background-color: #231f20;
+.layout {
+  display: grid;
+  grid-template-columns: 0.9fr 5fr; /* ความกว้างของ Sidebar และ Content */
+  grid-template-areas: "sidebar body"; 
+  height: 100vh; /* ทำให้ layout ครอบคลุมหน้าจอทั้งหมด */
+}
 
+.sidebar {
+  grid-area: sidebar;
+  min-height: 100vh; /* ใช้ min-height เพื่อให้ sidebar เต็มหน้าจอ */
+  width: 250px;
+  background-color: #231f20;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ส่วนโลโก้ */
@@ -46,6 +47,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 20px 0;
+  gap: 10px;
 }
 
 .sidebar-menu a {
@@ -60,12 +62,12 @@ body {
   text-align: left;
   width: 100%;
   padding: 15px 20px;
-  font-size: 16px;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .sidebar-menu button:hover {
@@ -75,29 +77,6 @@ body {
 .sidebar-menu .bi {
   font-size: 1.2rem;
   margin-right: 10px;
-}
-
-/* ส่วนท้าย */
-.sidebar-footer {
-  padding: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-}
-
-.sidebar-footer a {
-  text-decoration: none;
-  color: white;
-}
-
-.sidebar-footer button {
-  background: none;
-  border: none;
-  color: white;
-  text-align: left;
-  width: 100%;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .sidebar-footer button:hover {
@@ -111,16 +90,24 @@ body {
 
 /* รองรับหน้าจอขนาดเล็ก */
 @media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr; /* Sidebar เต็มความกว้าง */
+    grid-template-areas: 
+      "sidebar"
+      "body";
+  }
+
   .sidebar {
-    width: 200px;
+    width: 100%;
+    min-height: 100vh; /* ให้ Sidebar เต็มความสูง */
   }
 
   .sidebar-menu button {
-    font-size: 14px;
+    font-size: 0.9rem;
     padding: 10px 15px;
   }
 
   .sidebar-footer button {
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 }

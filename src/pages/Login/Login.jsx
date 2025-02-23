@@ -1,111 +1,100 @@
-import { login } from "../../data/user";
-import { useRef, useState } from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import LoginEmp from "../LoginEmp/LoginEmp";
 
-function Login({ setToken, setRole, setIsUser }) {
-  const userRef = useRef();
-  const passwordRef = useRef();
-  const [isAdmin, setIsAdmin] = useState(true);
+const Login = ({ setToken, setRole }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!username || !password) {
+      setError("กรุณากรอกชื่อผู้ใช้และรหัสผ่าน");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:9000/api/data/login",
+        {
+          username,
+          password,
+        }
+      );
+
+      if (response.data.token) {
+        setToken(response.data.token);
+        setRole(response.data.user.role);
+
+        // เก็บข้อมูลผู้ใช้ใน localStorage
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("userId", response.data.user.userId);
+
+        // Navigate based on role
+        if (response.data.user.role === "admin") {
+          navigate("/employees");
+        } else if (response.data.user.role === "Employee") {
+          navigate("/EmpSet");
+        } else {
+          setError("บทบาทของคุณไม่ได้รับการสนับสนุน");
+        }
+      }
+    } catch (error) {
+      setError("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-container">
-      {isAdmin ? (
-        <div>
-          <div class="mb-3" className="login-header">
-            <label for="exampleFormControlInput1" class="form-label">
-              Email address
-            </label>
-            <input
-              type="email"
-              class="form-control"
-              id="exampleFormControlInput1"
-              placeholder="name@example.com"
-              ref={userRef}
-            />
-          </div>
-          <div class="mb-3">
-            <label for="inputPassword5" class="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              id="inputPassword5"
-              class="form-control"
-              aria-describedby="passwordHelpBlock"
-              ref={passwordRef}
-            />
+      <h2>เข้าสู่ระบบ</h2>
 
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                const user = userRef.current.value.trim();
-                const password = passwordRef.current.value.trim();
-                const userInfo = login(user, password);
-                userRef.current.value = "";
-                passwordRef.current.value = "";
+      {error && <p className="error">{error}</p>}
 
-                if(!isAdmin){
-                  if(userInfo && userInfo.role === 'user'){
-                    setToken(userInfo.token)
-                    setRole(userInfo.role)
-                  }else {
-                    alert("Wrong User Username or password");
-                  }
-                }else{
-                  if(userInfo && userInfo.role === 'admin'){
-                    setToken(userInfo.token)
-                    setRole(userInfo.role)
-                  }else {
-                    alert("Wrong Admin Username or password");
-                  }
-                }
-
-                // if (userInfo === null) {
-                //   alert("Wrong Username or password");
-                //   useRef.current.focus();
-                // } else {
-                //   setToken(userInfo.token);
-                //   setRole(userInfo.role);
-                // }
-              }}
-            >
-              Login
-            </button>
-          </div>
-          <div className="checkBox">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="role"
-                id="roleAdmin"
-                checked={isAdmin}
-                onChange={() => setIsAdmin(true)}
-              />
-              <label class="form-check-label" for="flexRadioDefault1">
-                Admin
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="role"
-                id="roleUser"
-                checked={!isAdmin}
-                onChange={() => setIsAdmin(false)}
-              />
-              <label class="form-check-label" for="flexRadioDefault1">
-                User
-              </label>
-            </div>
-          </div>
+      <form onSubmit={handleLogin}>
+        <div className="mb-3">
+          <label className="form-label">ชื่อผู้ใช้</label>
+          <input
+            type="text"
+            className="form-control"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            placeholder="กรอกชื่อผู้ใช้"
+          />
         </div>
-      ) : (
-        <LoginEmp setRole={setRole} setToken={setToken}  setIsAdmin={setIsAdmin}/>
-      )}
+
+        <div className="mb-3">
+          <label className="form-label">รหัสผ่าน</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="กรอกรหัสผ่าน"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="btn"
+          disabled={loading}
+        >
+          {loading ? "กำลังโหลด..." : "เข้าสู่ระบบ"}
+        </button>
+      </form>
     </div>
   );
-}
+};
 
 export default Login;
