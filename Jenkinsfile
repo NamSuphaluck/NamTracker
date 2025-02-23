@@ -24,7 +24,7 @@ pipeline {
                     bat "docker build -t dockertest ."
                     
                     // รัน Docker container จาก image ที่สร้าง
-                    bat "docker run -d --name my-container -p 8080:80 dockertest:latest"
+                    bat "docker run -d --name my-container -p 54100:3000 dockertest:latest"
                 }
             }
         }
