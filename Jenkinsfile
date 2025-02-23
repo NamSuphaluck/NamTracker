@@ -7,7 +7,7 @@ pipeline {
                 echo "Clone Code the project From Git"
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: '*/main']],
+                    branches: [[name: '*/master']],
                     userRemoteConfigs: [[
                         credentialsId: 'Boblee',
                         url: 'https://github.com/NamSuphaluck/NamTracker.git'
