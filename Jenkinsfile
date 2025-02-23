@@ -4,37 +4,56 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // ตรวจสอบโค้ดจาก Git repository
-                git 'https://github.com/NamSuphaluck/NamTracker.git'
+                echo "Clone Code the project From Git"
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        credentialsId: 'Boblee',
+                        url: 'https://github.com/NamSuphaluck/NamTracker.git'
+                    ]]
+                ])
             }
         }
 
         stage('Build Docker Image') {
             steps {
+                echo "Building Docker image..."
                 script {
-                    // สร้าง Docker image จาก Dockerfile
-                    def myImage = docker.build('my-image-name')
+                    // สร้าง Docker image โดยใช้ Dockerfile ที่อยู่ใน repository
+                    def myImage = docker.build('my-backend-api-image')
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Unit Tests') {
             steps {
+                echo "Running tests in Docker container..."
                 script {
-                    // รัน Docker container จาก image ที่สร้างขึ้น
-                    docker.image('my-image-name').inside {
-                        // คำสั่งที่ต้องการให้รันใน container
-                        sh 'echo "Build completed!"'
+                    // รัน unit tests ภายใน Docker container
+                    docker.image('my-backend-api-image').inside {
+                        // เพิ่มคำสั่งที่ใช้รัน Unit tests ภายใน container
+                        sh 'npm test' // ตัวอย่างคำสั่ง (ปรับตามโปรเจกต์ของคุณ)
                     }
                 }
             }
         }
 
-        stage('Publish') {
+        stage('Deploy') {
             steps {
+                echo "Deploying the application..."
                 script {
-                    // ตัวอย่างการ push Docker image ไปที่ Docker registry (ถ้ามี)
-                    docker.image('my-image-name').push()
+                    // Deploy Docker container หรือ Push Docker image (ถ้าต้องการ)
+                    docker.image('my-backend-api-image').push('latest')  // ตัวอย่างการ Push ไปยัง Docker registry
+                }
+            }
+        }
+
+        stage('Deployment test') {
+            steps {
+                echo "Running deployment tests..."
+                script {
+                    // เพิ่มคำสั่งทดสอบ deployment (เช่น การทดสอบ API ที่ deploy ไปแล้ว)
                 }
             }
         }
