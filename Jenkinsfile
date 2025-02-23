@@ -22,11 +22,14 @@ pipeline {
                 script {
                     // สร้าง Docker image โดยใช้ Dockerfile ที่อยู่ใน repository
                     bat "docker build -t Dockertest ."
+                    
+                    // รัน Docker container จาก image ที่สร้าง
+                    bat "docker run -d --name my-container -p 8080:80 Dockertest:latest"
                 }
             }
         }
 
-         stage('Unit Tests') {
+        stage('Unit Tests') {
             steps {
                 echo "Running tests..."
             }
